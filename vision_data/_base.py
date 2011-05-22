@@ -3,6 +3,8 @@ import os
 import urllib
 import subprocess
 import shutil
+import Image
+import numpy as np
 
 
 class VisionDataset(object):
@@ -23,7 +25,7 @@ class VisionDataset(object):
             overview: A string describing the dataset
         """
         try:
-            self._data_root = os.environ['VISION_DATA_ROOT']
+            self._data_root = os.path.abspath(os.environ['VISION_DATA_ROOT'])
         except KeyError:
             raise KeyError('Environmental variable VISION_DATA_ROOT must be set '
                            'to the path where you want to store the data files.')
@@ -66,3 +68,23 @@ class VisionDataset(object):
             self._unpack_download(self.dataset_path + file_name)
             print('Removing Temporary File [%s]' % file_name)
             os.remove(self.dataset_path + file_name)
+
+    def object_rec_boxes(self, *args, **kw):
+        for image_path, objects in self.object_rec_parse(*args, **kw).items():
+            image = Image.open(image_path)
+            print(image_path)
+            for obj in objects:
+                min_coords = np.max([[0, 0],
+                                     np.min(obj['xy'], 0)], 0)
+                if (min_coords > image.size).any():
+                    print('Warning: Annotation entirely outside of image, skipping! file[%s] class[%s] xy[%s]' % (image_path,
+                                                                                                                  obj['class'],
+                                                                                                                  obj['xy']))
+                    continue
+                max_coords = np.min([np.array(image.size) - 1,
+                                     np.max(obj['xy'], 0) + 1], 0)
+                left, upper = min_coords
+                right, lower = max_coords
+                print((left, upper, right, lower))
+                print(image.size)
+                yield obj['class'], image.crop((left, upper, right, lower))
