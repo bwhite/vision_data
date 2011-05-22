@@ -74,28 +74,35 @@ class SUN09(vision_data.VisionDataset):
             static_data.setdefault(object_name, []).append(objs)
         return static_data, data['out_of_context'], data['static_sun09_database']
 
-    def _parse_mat_dataset(self, dataset):
+    def _parse_mat_dataset(self, dataset, categories):
         image_objects = {}
         for cur_image_data in dataset:
             cur_image_data = cur_image_data.annotation[0][0]
             filename = ''.join(cur_image_data.filename[0])
             directory = ''.join(cur_image_data.folder[0])
-            img_path = '%s%s/%s' % (self.dataset_path, directory, filename)
+            img_path = '%sImages/%s/%s' % (self.dataset_path, directory, filename)
             image_objects[img_path] = []
             for obj in cur_image_data.object[0]:
                 class_name = ''.join(obj.name[0])
+                if class_name not in categories:
+                    print('Skipping [%s]' % class_name)
+                    continue
                 x = obj.polygon[0][0].x
                 y = obj.polygon[0][0].y
                 xy = np.hstack([x, y])
-                image_objects[img_path].append({'class_name': class_name,
+                image_objects[img_path].append({'class': class_name,
                                                 'xy': xy})
         return image_objects
 
     def _parse_mat(self):
+        categories = sp.io.loadmat('%sdataset/sun09_objectCategories.mat' % self.dataset_path,
+                                   chars_as_strings=False, struct_as_record=False)
+        # For whatever reason they left off these 4 classes in the paper but kept them in the categories
+        categories = set(''.join(x[0]) for x in categories['names'][0]) - set(['boat', 'sign', 'book', 'cars'])
         data = sp.io.loadmat('%sdataset/sun09_groundTruth.mat' % self.dataset_path,
                              chars_as_strings=False, struct_as_record=False)
-        train_image_objects = self._parse_mat_dataset(data['Dtraining'][0])
-        test_image_objects = self._parse_mat_dataset(data['Dtest'][0])
+        train_image_objects = self._parse_mat_dataset(data['Dtraining'][0], categories)
+        test_image_objects = self._parse_mat_dataset(data['Dtest'][0], categories)
         return train_image_objects, test_image_objects
 
     def object_rec_parse(self, split='train'):

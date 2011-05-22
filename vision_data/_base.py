@@ -83,8 +83,8 @@ class VisionDataset(object):
                     continue
                 max_coords = np.min([np.array(image.size) - 1,
                                      np.max(obj['xy'], 0) + 1], 0)
-                left, upper = min_coords
-                right, lower = max_coords
+                left, upper = np.asarray(np.round(min_coords), dtype=np.int32)
+                right, lower = np.asarray(np.round(max_coords), dtype=np.int32)
                 print((left, upper, right, lower))
                 print(image.size)
                 yield obj['class'], image.crop((left, upper, right, lower))
