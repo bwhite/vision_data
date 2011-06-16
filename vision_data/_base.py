@@ -7,6 +7,10 @@ import Image
 import numpy as np
 
 
+class DontRemoveException(Exception):
+    """Raise this in the unpack_download if you don't want a file to be removed"""
+
+
 class VisionDataset(object):
     """
     """
@@ -45,13 +49,21 @@ class VisionDataset(object):
             cmd = 'tar -xzf %s -C %s' % (file_name, dir_name)
         elif ext == 'tar.bz2':
             cmd = 'tar -xjf %s -C %s' % (file_name, dir_name)
+        elif ext == 'zip':
+            cmd = 'unzip %s -d %s' % (file_name, dir_name)
+        elif ext == 'txt':  # Don't do anything
+            raise DontRemoveException
         else:
             raise ValueError('Extension [%s] not supported' % ext)
         subprocess.call(cmd.split())
 
     def download(self, force=False):
         if force:
-            shutil.rmtree(self.dataset_path)
+            print('Removing [%s]' % self.dataset_path)
+            try:
+                shutil.rmtree(self.dataset_path)
+            except OSError, e:
+                print(e)
         if os.path.exists(self.dataset_path):
             return True
         os.makedirs(self.dataset_path)
@@ -65,11 +77,31 @@ class VisionDataset(object):
                 break
         for (md5hash, file_name), urls in self._data_urls.items():
             print('Unpacking [%s]' % file_name)
-            self._unpack_download(self.dataset_path + file_name)
-            print('Removing Temporary File [%s]' % file_name)
-            os.remove(self.dataset_path + file_name)
+            try:
+                self._unpack_download(self.dataset_path + file_name)
+            except DontRemoveException:
+                pass
+            else:
+                print('Removing Temporary File [%s]' % file_name)
+                os.remove(self.dataset_path + file_name)
+
+    def object_rec_parse(self, *args, **kw):
+        raise NotImplementedError
+
+    def scene_rec_parse(self, *args, **kw):
+        raise NotImplementedError
+
+    def image_class_parse(self, *args, **kw):
+        raise NotImplementedError
+
+    def face_verification_parse(self, *args, **kw):
+        raise NotImplementedError
 
     def object_rec_boxes(self, *args, **kw):
+        """
+        Yields:
+            (object_class, PIL Image)
+        """
         for image_path, objects in self.object_rec_parse(*args, **kw).items():
             image = Image.open(image_path)
             print(image_path)
@@ -88,3 +120,53 @@ class VisionDataset(object):
                 print((left, upper, right, lower))
                 print(image.size)
                 yield obj['class'], image.crop((left, upper, right, lower))
+
+    def scene_rec_boxes(self, *args, **kw):
+        """
+        Yields:
+            (scene_name, PIL Image)
+        """
+        for image_path, scene_name in self.scene_rec_parse(*args, **kw).items():
+            yield scene_name, Image.open(image_path)
+
+    def face_verification_boxes(self, *args, **kw):
+        """
+        Yields:
+            (IsSame, (face0, face1)) where face0/1 are PIL Images
+        """
+        for is_same, (face0_fn, face1_fn) in self.face_verification_parse(*args, **kw).items():
+            yield is_same, (Image.open(face0_fn), Image.open(face1_fn))
+
+    def image_class_boxes(self, *args, **kw):
+        """
+        Yields:
+            (tags, PIL Image)
+        """
+        # If image classification data is available then use it
+        try:
+            image_class_data = self.image_class_parse(*args, **kw)
+        except NotImplementedError:
+            pass
+        else:
+            for image_path, tags in image_class_data.items():
+                yield set(tags), Image.open(image_path)
+            return
+        # Else if object recognition data is available then use it
+        try:
+            object_rec_data = self.object_rec_parse(*args, **kw)
+        except NotImplementedError:
+            pass
+        else:
+            for image_path, objects in object_rec_data.items():
+                yield set([x['class'] for x in objects]), Image.open(image_path)
+            return
+        # Else if scene recognition data is available then use it
+        try:
+            scene_rec_data = self.scene_rec_parse(*args, **kw)
+        except NotImplementedError:
+            pass
+        else:
+            for image_path, scene_name in scene_rec_data.items():
+                yield set([scene_name]), Image.open(image_path)
+            return
+        raise NotImplementedError

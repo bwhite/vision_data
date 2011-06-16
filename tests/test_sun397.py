@@ -42,12 +42,12 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_sun09(self):
+    def test_sun397(self):
         import vision_data
-        sun09 = vision_data.SUN09()
-        sun09.download()
-        objs = sun09.object_rec_parse()
-        print(objs)
+        sun397 = vision_data.SUN397()
+        sun397.download(force=True)
+        scenes = sun397.scene_rec_parse()
+        print(scenes)
 
 if __name__ == '__main__':
     unittest.main()

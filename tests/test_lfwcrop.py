@@ -42,12 +42,12 @@ class Test(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_sun09(self):
+    def test_lfwcrop(self):
         import vision_data
-        sun09 = vision_data.SUN09()
-        sun09.download()
-        objs = sun09.object_rec_parse()
-        print(objs)
+        lfwcrop = vision_data.LFWcrop()
+        lfwcrop.download(force=True)
+        faces = lfwcrop.face_verification_parse()
+        print(faces)
 
 if __name__ == '__main__':
     unittest.main()
