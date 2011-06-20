@@ -3,3 +3,4 @@ from _sun09 import SUN09
 from _sun397 import SUN397
 from _indoor09 import Indoor09
 from _lfwcropped import LFWcrop
+from _caltech256 import Caltech256
