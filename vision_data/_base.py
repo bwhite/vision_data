@@ -106,6 +106,7 @@ class VisionDataset(object):
             image = Image.open(image_path)
             print(image_path)
             for obj in objects:
+                obj['xy'] = np.ascontiguousarray(obj['xy'])
                 min_coords = np.max([[0, 0],
                                      np.min(obj['xy'], 0)], 0)
                 if (min_coords > image.size).any():
@@ -170,3 +171,28 @@ class VisionDataset(object):
                 yield set([scene_name]), Image.open(image_path)
             return
         raise NotImplementedError
+
+    def segmentation_boxes(self, *args, **kw):
+        """
+        Args:
+            split: Dataset split, one of 'train', 'test' (default: train)
+        
+        Yields:
+            Dataset as specified by 'split'
+
+            Data is in the form of (masks, PIL Image), where
+            masks is a dict of boolean masks with keys as class names
+        """
+        import cv2
+        for image_path, image_datas in self.object_rec_parse(*args, **kw).items():
+            image = Image.open(image_path)
+            image_arr = np.asarray(image)
+            masks = {}
+            for image_data in image_datas:
+                c = image_data['class']
+                if c not in masks:
+                    masks[c] = np.zeros(image_arr.shape[:2], dtype=np.uint8)
+                xy = image_data['xy']
+                xy = np.array([np.vstack([xy, xy[0, :]])], dtype=np.int32)
+                cv2.fillPoly(masks[c], xy, 255)
+            yield masks, image

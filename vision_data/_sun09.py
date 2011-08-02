@@ -114,7 +114,7 @@ class SUN09(vision_data.VisionDataset):
             Dataset as specified by 'split'
 
             Data is in the form of [image_path] = objects, where
-            objects is {'class': class_name, 'xy': np_array}
+            objects is a list of {'class': class_name, 'xy': np_array}
         """
         pkl_fn = self.dataset_path + 'sun09.pkl'
         if not os.path.exists(pkl_fn):
@@ -131,3 +131,15 @@ class SUN09(vision_data.VisionDataset):
             return test_data
         else:
             raise ValueError('Invalid split vlaue')
+
+    def image_class_parse(self, split='train'):
+        """
+        Args:
+            split: Dataset split, one of 'train', 'test' (default: train)
+        
+        Returns:
+            Dataset as specified by 'split'
+            Data is in the form of [image_path] = image_classes
+        """
+        data = self.object_rec_parse(split)
+        return dict([(x, set([z['class'] for z in y])) for x, y in data.items()])
