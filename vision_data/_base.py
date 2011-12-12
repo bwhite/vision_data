@@ -94,6 +94,21 @@ class VisionDataset(object):
     def image_class_parse(self, *args, **kw):
         raise NotImplementedError
 
+    def image_class_negpos_parse(self, *args, **kw):
+        """By default collect all tags and the negative for an image is everything not positive.
+
+        NOTE(brandyn): If the splits are missing some of the classes then the negatives will
+        be incomplete.
+
+        Returns:
+            Data is in the form of [image_path] = (neg_image_classes, pos_image_classes) where each is a set of strings
+        """
+        data = self.image_class_parse(*args, **kw)
+        negs = set()
+        for x in data.values():
+            negs.update(set(x))
+        return dict((x, (negs - set(y), set(y))) for x, y in data.items())
+
     def face_verification_parse(self, *args, **kw):
         raise NotImplementedError
 
@@ -171,6 +186,15 @@ class VisionDataset(object):
                 yield set([scene_name]), Image.open(image_path)
             return
         raise NotImplementedError
+
+    def image_class_negpos_boxes(self, *args, **kw):
+        """
+        Yields:
+            (tags, PIL Image)
+        """
+        image_class_data = self.image_class_negpos_parse(*args, **kw)
+        for image_path, (neg_tags, pos_tags) in image_class_data.items():
+                yield (set(neg_tags), set(pos_tags)), Image.open(image_path)
 
     def segmentation_boxes(self, *args, **kw):
         """
