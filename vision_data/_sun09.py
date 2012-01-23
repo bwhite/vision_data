@@ -19,9 +19,9 @@ class SUN09(vision_data.VisionDataset):
     def __init__(self):
         super(SUN09, self).__init__(name='sun09',
                                     data_urls={('fd2679cddee3198976086f01eb112f1a',
-                                                'sun09.tar'): ['http://groups.csail.mit.edu/vision/SUN/Hcontext/data/sun09.tar'],
+                                                'sun09.tar'): ['http://groups.csail.mit.edu/vision/Hcontext/data/sun09.tar'],
                                                ('d8f02fef3872cfad10e76c10927f47ef',
-                                                'datasetMat.tar'): ['http://groups.csail.mit.edu/vision/SUN/Hcontext/data/datasetMat.tar']},
+                                                'datasetMat.tar'): ['http://groups.csail.mit.edu/vision/Hcontext/data/datasetMat.tar']},
                                     homepage='http://people.csail.mit.edu/myungjin/HContext.html',
                                     bibtexs=None,
                  overview=None)
