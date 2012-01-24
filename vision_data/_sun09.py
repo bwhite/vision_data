@@ -80,7 +80,7 @@ class SUN09(vision_data.VisionDataset):
             cur_image_data = cur_image_data.annotation[0][0]
             filename = ''.join(cur_image_data.filename[0])
             directory = ''.join(cur_image_data.folder[0])
-            img_path = '%sImages/%s/%s' % (self.dataset_path, directory, filename)
+            img_path = 'Images/%s/%s' % (directory, filename)
             image_objects[img_path] = []
             for obj in cur_image_data.object[0]:
                 class_name = ''.join(obj.name[0])
@@ -125,10 +125,11 @@ class SUN09(vision_data.VisionDataset):
         else:
             with open(pkl_fn) as sun09_fp:
                 train_data, test_data = pickle.load(sun09_fp)
+        mk_abs = lambda z: dict((self.dataset_path + x, y) for x, y in z.items())
         if split == 'train':
-            return train_data
+            return mk_abs(train_data)
         elif split == 'test':
-            return test_data
+            return mk_abs(test_data)
         else:
             raise ValueError('Invalid split vlaue')
 
