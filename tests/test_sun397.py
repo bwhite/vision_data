@@ -45,9 +45,11 @@ class Test(unittest.TestCase):
     def test_sun397(self):
         import vision_data
         sun397 = vision_data.SUN397()
-        sun397.download(force=True)
-        scenes = sun397.scene_rec_parse()
-        print(scenes)
+        sun397.download()
+        scenes = sun397.scene_rec_parse(('test', 1))
+        print(len(scenes))
+        print scenes.items()[0]
+        print(len(set(scenes.values())))
 
 if __name__ == '__main__':
     unittest.main()

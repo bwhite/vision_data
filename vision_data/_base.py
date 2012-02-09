@@ -92,7 +92,19 @@ class VisionDataset(object):
         raise NotImplementedError
 
     def image_class_parse(self, *args, **kw):
-        raise NotImplementedError
+        """
+        Args:
+            split: Dataset split, one of 'train', 'test' (default: train)
+        
+        Returns:
+            Dataset as specified by 'split'
+            Data is in the form of [image_path] = image_classes
+        """
+        try:
+            return dict((x, [y]) for x, y in
+                        self.scene_rec_parse(*args, **kw).items())
+        except NotImplementedError:
+            raise
 
     def image_class_negpos_parse(self, *args, **kw):
         """By default collect all tags and the negative for an image is everything not positive.
