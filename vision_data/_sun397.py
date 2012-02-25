@@ -21,7 +21,7 @@ class SUN397(vision_data.VisionDataset):
                  overview=None)
         self.hierarchy = json.load(open(self.dataset_path + 'sun908_hierarchy.js'))
 
-    def scene_rec_parse(self, split='train'):
+    def scene_rec_parse(self, split=('train', 1, 2)):
         """
         Args:
             split: Dataset split, one of 'train', 'test' (default: train) or
@@ -32,14 +32,10 @@ class SUN397(vision_data.VisionDataset):
 
             Data is in the form of [image_path] = scene_name
         """
-        if isinstance(split, str):
-            partition = '*'
-            level = 2
-        else:
-            split, partition, level = split
-            assert 0 < partition <= 10
-            assert 0 <= level <= 2
-            partition = '%.2d' % partition
+        split, partition, level = split
+        assert 0 < partition <= 10
+        assert 0 <= level <= 2
+        partition = '%.2d' % partition
         if split == 'train':
             g = 'Training_%s.txt' % partition
         elif split == 'test':
