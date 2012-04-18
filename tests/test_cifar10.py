@@ -15,9 +15,7 @@ class Test(unittest.TestCase):
         import vision_data
         d = vision_data.CIFAR10()
         d.download()
-        for z, (x, y) in enumerate(d.single_image_class_boxes()):
-            if z > 10:
-                break
+        for x, y in d.single_image_class_boxes('test'):
             print(x)
             print(y.shape)
 
