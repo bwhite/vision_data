@@ -125,7 +125,7 @@ class VisionDataset(object):
         raise NotImplementedError
 
     def object_rec_boxes(self, *args, **kw):
-        """
+        """5B
         Yields:
             (object_class, PIL Image)
         """
@@ -165,11 +165,20 @@ class VisionDataset(object):
         for is_same, (face0_fn, face1_fn) in self.face_verification_parse(*args, **kw).items():
             yield is_same, (Image.open(face0_fn), Image.open(face1_fn))
 
+    def single_image_class_boxes(self, *args, **kw):
+        raise NotImplementedError
+
     def image_class_boxes(self, *args, **kw):
         """
         Yields:
             (tags, PIL Image)
         """
+        try:
+            for image_class, image in self.single_image_class_boxes(*args, **kw):
+                yield [image_class], image
+            return
+        except NotImplementedError:
+            pass
         # If image classification data is available then use it
         try:
             image_class_data = self.image_class_parse(*args, **kw)

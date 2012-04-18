@@ -9,3 +9,5 @@ from _voc07 import VOC07
 from _esp import ESP
 from _fifteen_scene import FifteenScene
 from _attribute import Attribute
+from _cifar10 import CIFAR10
+from _cifar100 import CIFAR100
