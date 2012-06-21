@@ -45,7 +45,7 @@ class VisionDataset(object):
         dir_name = os.path.dirname(file_name)
         if ext == 'tar':
             cmd = 'tar -xf %s -C %s' % (file_name, dir_name)
-        elif ext == 'tar.gz':
+        elif ext in ('tar.gz', 'tgz'):
             cmd = 'tar -xzf %s -C %s' % (file_name, dir_name)
         elif ext == 'tar.bz2':
             cmd = 'tar -xjf %s -C %s' % (file_name, dir_name)
@@ -76,15 +76,18 @@ class VisionDataset(object):
                 #assert(md5hash == hashlib.md5(data).hexdigest())
                 break
         for (md5hash, file_name), urls in self._data_urls.items():
-            print('Unpacking [%s]' % file_name)
-            try:
-                self._unpack_download(self.dataset_path + file_name)
-            except DontRemoveException:
-                pass
-            else:
-                print('Removing Temporary File [%s]' % file_name)
-                os.remove(self.dataset_path + file_name)
+            self._unpack_remove_file(file_name)
 
+    def _unpack_remove_file(self, file_name):
+        print('Unpacking [%s]' % file_name)
+        try:
+            self._unpack_download(self.dataset_path + file_name)
+        except DontRemoveException:
+            pass
+        else:
+            print('Removing Temporary File [%s]' % file_name)
+            os.remove(self.dataset_path + file_name)
+    
     def object_rec_parse(self, *args, **kw):
         raise NotImplementedError
 
@@ -125,7 +128,7 @@ class VisionDataset(object):
         raise NotImplementedError
 
     def object_rec_boxes(self, *args, **kw):
-        """5B
+        """
         Yields:
             (object_class, PIL Image)
         """
