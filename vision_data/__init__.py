@@ -12,3 +12,4 @@ from _attribute import Attribute
 from _cifar10 import CIFAR10
 from _cifar100 import CIFAR100
 from _imagenet import ImageNet
+from _labelme import LabelMe
