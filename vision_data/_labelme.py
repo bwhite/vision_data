@@ -17,11 +17,12 @@ class LabelMe(vision_data.VisionDataset):
 
     def download(self):
 
-        def url_dir(url, ignore='static_web_tinyimagesdataset'):
+        def url_dir(url):
             print(url)
             out = []
             for x in re.findall('href="([^\?/][^"]+)"', urllib.urlopen(url).read()):
-                if x.find(ignore) != -1:
+                # NOTE(brandyn): We have to ignore this because it has no files and many empty dirs
+                if x.find('static_web_tinyimagesdataset') != -1:
                     continue
                 x = ''.join([url, x])
                 if x.endswith('/'):
@@ -29,4 +30,4 @@ class LabelMe(vision_data.VisionDataset):
                 else:
                     out.append(x)
             return out
-        return url_dir('http://labelme.csail.mit.edu/Annotations/')
+        return [x for x in url_dir('http://labelme.csail.mit.edu/Annotations/') if x.endswith('.xml')]
