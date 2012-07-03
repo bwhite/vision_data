@@ -54,7 +54,7 @@ class SUN09(vision_data.VisionDataset):
             image_path = self.dataset_path + 'Images/%s/' % os.path.basename(folder_path)
             for filename_path in glob.glob(folder_path + '/*'):
                 try:
-                    filename, folder, objs = self._parse_xml(filename_path)
+                    filename, folder, objs = vision_data.parse_voc_xml(filename_path)
                 except Exception, e:
                     print(e)
                     print('Parse Error: %s' % filename_path)
@@ -111,9 +111,7 @@ class SUN09(vision_data.VisionDataset):
             split: Dataset split, one of 'train', 'test' (default: train)
         
         Returns:
-            Dataset as specified by 'split'
-
-            Data is in the form of [image_path] = objects, where
+            Iterator of (image_fn, objects), where
             objects is a list of {'class': class_name, 'xy': np_array}
         """
         pkl_fn = self.dataset_path + 'sun09.pkl'
@@ -125,7 +123,7 @@ class SUN09(vision_data.VisionDataset):
         else:
             with open(pkl_fn) as sun09_fp:
                 train_data, test_data = pickle.load(sun09_fp)
-        mk_abs = lambda z: dict((self.dataset_path + x, y) for x, y in z.items())
+        mk_abs = lambda z: ((self.dataset_path + x, y) for x, y in z.items())
         if split == 'train':
             return mk_abs(train_data)
         elif split == 'test':

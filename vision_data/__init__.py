@@ -1,4 +1,4 @@
-from _base import VisionDataset
+from _base import VisionDataset, parse_voc_xml
 from _sun09 import SUN09
 from _sun397 import SUN397
 from _indoor09 import Indoor09
