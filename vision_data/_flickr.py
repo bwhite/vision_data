@@ -74,7 +74,7 @@ class Flickr(vision_data.VisionDataset):
                 except KeyError:
                     return
 
-    def image_class_parse_url(self, value):
+    def image_class_meta_url(self, value):
         """
         Args:
             tags:

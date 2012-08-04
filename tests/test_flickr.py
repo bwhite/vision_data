@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
         import vision_data
         d = vision_data.Flickr()
         import pprint
-        pprint.pprint(zip(range(10), d.image_class_parse_url('pepsi logo')))
+        pprint.pprint(zip(range(10), d.image_class_meta_url('pepsi logo')))
 
 if __name__ == '__main__':
     unittest.main()
