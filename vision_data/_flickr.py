@@ -64,7 +64,8 @@ class Flickr(vision_data.VisionDataset):
                 flickrapi.exceptions.FlickrError,
                 xml.parsers.expat.ExpatError,
                 xml.etree.ElementTree.ParseError,
-                urllib2.HTTPError):
+                urllib2.HTTPError), e:
+            print('Except[%s]' % str(e))
             time.sleep(self.sleep_penalty)
             self.sleep_penalty *= 2
 
