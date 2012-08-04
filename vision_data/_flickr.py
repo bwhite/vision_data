@@ -85,18 +85,12 @@ class Flickr(vision_data.VisionDataset):
         Returns:
             Data is in the form of (image_url, metadata)
         """
-        urls = set()
         for page in range(1, self.num_pages):
             for k, v in self._get_data(self._query(value, page=page)):
-                if k in urls:
-                    continue
-                urls.add(k)
                 yield k, v
         while 1:
             cur_time_center = random.randint(self.min_rnd_date, self.max_rnd_date)
             min_date = cur_time_center - self.date_radius
             max_date = cur_time_center + self.date_radius
             for k, v in self._get_data(self._query(value, (min_date, max_date))):
-                if k in urls:
-                    continue
                 yield k, v
