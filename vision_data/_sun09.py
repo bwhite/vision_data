@@ -4,8 +4,6 @@ import glob
 import os
 import cPickle as pickle
 import vision_data
-import scipy as sp
-import scipy.io
 
 
 class SUN09(vision_data.VisionDataset):
@@ -25,6 +23,8 @@ class SUN09(vision_data.VisionDataset):
                                     homepage='http://people.csail.mit.edu/myungjin/HContext.html',
                                     bibtexs=None,
                  overview=None)
+        import scipy as sp
+        import scipy.io
 
     def _parse_xml(self, xml_filename):
         # Replace a malformed character with a valid one (only one in the database)
