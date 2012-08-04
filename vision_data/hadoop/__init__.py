@@ -13,7 +13,8 @@ def flickr_images(tags, images_per_tag, hdfs_output, api_key=None, api_secret=No
     if remove_output and hadoopy.exists(hdfs_output):
         print('Removing output dir[%s]' % hdfs_output)
         hadoopy.rmr(hdfs_output)
-    hadoopy.writetb(hdfs_output + '/tags', ((images_per_tag, x) for x in tags))
+    for tag_num, tag in enumerate(tags):
+        hadoopy.writetb(hdfs_output + '/tags/%d' % tag_num, [(images_per_tag, tag)])
     hadoopy.launch_frozen(hdfs_output + '/tags', hdfs_output + '/metadata', _lf('flickr_bulk.py'), cmdenvs={'FLICKR_API_KEY': api_key,
                                                                                                             'FLICKR_API_SECRET': api_secret})
     hadoopy.launch_frozen(hdfs_output + '/metadata', hdfs_output + '/image_metadata', _lf('file_downloader.py'))
