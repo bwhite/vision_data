@@ -12,6 +12,8 @@ api_secret = ''
 try:
     from flickr_api_key import api_key, api_secret
 except ImportError:
+    api_key = os.environ.get('FLICKR_API_KEY')
+    api_secret = os.environ.get('FLICKR_API_SECRET')
     if not api_key or not api_secret:
         print('Missing flickr API key')
         import sys
