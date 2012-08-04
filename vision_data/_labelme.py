@@ -48,7 +48,7 @@ class LabelMe(vision_data.VisionDataset):
             name = annotation_path + hashlib.md5(xml_data).hexdigest() + '-' + os.path.basename(x)
             open(name, 'w').write(xml_data)
 
-    def object_rec_parse_url(self, objects=None):
+    def object_rec_parse_url(self, objects=None, unique=True):
         """
         Args:
             objects: List of objects to return (if None then return all)
@@ -58,6 +58,7 @@ class LabelMe(vision_data.VisionDataset):
             objects is a list of {'class': class_name, 'xy': np_array}
         """
         objects = set(objects)
+        prev_urls = set()
         for fn in glob.glob(self.dataset_path + 'Annotations/*.xml'):
             try:
                 image_fn, folder, cur_objects = vision_data.parse_voc_xml(fn)
@@ -66,5 +67,9 @@ class LabelMe(vision_data.VisionDataset):
                 logging.warning('Cannot parse [%s]' % fn)
             else:
                 if cur_objects:
+                    if (folder, image_fn) in prev_urls:
+                        print('Duplicate Annotation: http://labelme.csail.mit.edu/Images/%s/%s' % (folder, image_fn))
+                        continue
+                    prev_urls.add((folder, image_fn))
                     print('http://labelme.csail.mit.edu/Images/%s/%s' % (folder, image_fn))
                     yield 'http://labelme.csail.mit.edu/Images/%s/%s' % (folder, image_fn), cur_objects

@@ -13,3 +13,4 @@ from _cifar10 import CIFAR10
 from _cifar100 import CIFAR100
 from _imagenet import ImageNet
 from _labelme import LabelMe
+from _flickr import Flickr

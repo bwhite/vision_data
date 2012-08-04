@@ -2,6 +2,7 @@ import hashlib
 import os
 import urllib
 import imfeat
+import logging
 import urllib
 import subprocess
 import shutil
@@ -18,7 +19,7 @@ class VisionDataset(object):
     """
     """
     
-    def __init__(self, name, data_urls, homepage=None, bibtexs=None,
+    def __init__(self, name, data_urls=None, homepage=None, bibtexs=None,
                  overview=None):
         """
         
@@ -70,6 +71,8 @@ class VisionDataset(object):
         if os.path.exists(self.dataset_path):
             return True
         os.makedirs(self.dataset_path)
+        if self._data_urls is None:
+            return
         for (md5hash, file_name), urls in self._data_urls.items():
             print('Downloading [%s]' % file_name)
             for url in urls:
@@ -98,7 +101,10 @@ class VisionDataset(object):
         except NotImplementedError:
             try:
                 for image_url, objects in self.object_rec_parse_url(*args, **kw):
-                    yield imfeat.image_fromstring(urllib.urlopen(image_url).read()), objects
+                    try:
+                        yield imfeat.image_fromstring(urllib.urlopen(image_url).read()), objects
+                    except:
+                        logging.warn('Cannot download/parse [%s], skipping...' % image_url)
             except NotImplementedError:
                 raise NotImplementedError
 
