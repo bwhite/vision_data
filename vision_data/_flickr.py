@@ -7,6 +7,8 @@ import httplib
 import flickrapi
 import vision_data
 import os
+import xml.etree.ElementTree
+
 api_key = ''  # NOTE(brandyn): Include your flickr api key and secret here
 api_secret = ''
 try:
@@ -61,6 +63,7 @@ class Flickr(vision_data.VisionDataset):
         except (httplib.BadStatusLine,
                 flickrapi.exceptions.FlickrError,
                 xml.parsers.expat.ExpatError,
+                xml.etree.ElementTree.ParseError,
                 urllib2.HTTPError):
             time.sleep(self.sleep_penalty)
             self.sleep_penalty *= 2
