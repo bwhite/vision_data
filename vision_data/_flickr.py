@@ -30,7 +30,8 @@ class Flickr(vision_data.VisionDataset):
         super(Flickr, self).__init__(name='flickr',
                                      homepage='http://www.flickr.com',
                                      bibtexs=None,
-                                     overview=None)
+                                     overview=None,
+                                     no_root=True)
         self.api_key = api_key
         self.api_secret = api_secret
         self.earliest = 1167631200

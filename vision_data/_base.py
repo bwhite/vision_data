@@ -20,7 +20,7 @@ class VisionDataset(object):
     """
     
     def __init__(self, name, data_urls=None, homepage=None, bibtexs=None,
-                 overview=None):
+                 overview=None, no_root=False):
         """
         
         Args:
@@ -31,18 +31,20 @@ class VisionDataset(object):
             homepage: A webpage describing the dataset.
             bibtexs: A list of recommended bibtex entries
             overview: A string describing the dataset
+            no_root: The dataset doesn't have a root
         """
-        try:
-            self._data_root = os.path.abspath(os.environ['VISION_DATA_ROOT'])
-        except KeyError:
-            raise KeyError('Environmental variable VISION_DATA_ROOT must be set '
-                           'to the path where you want to store the data files.')
+        if not no_root:
+            try:
+                self._data_root = os.path.abspath(os.environ['VISION_DATA_ROOT'])
+                self.dataset_path = '%s/%s/' % (self._data_root, name)
+            except KeyError:
+                raise KeyError('Environmental variable VISION_DATA_ROOT must be set '
+                               'to the path where you want to store the data files.')
         self._name = name
         self._data_urls = data_urls
         self._homepage = homepage
         self._bibtexs = bibtexs
         self._overview = overview
-        self.dataset_path = '%s/%s/' % (self._data_root, self._name)
 
     def _unpack_download(self, file_name):
         ext = file_name.split('.', 1)[1]
