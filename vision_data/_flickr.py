@@ -95,6 +95,7 @@ class Flickr(vision_data.VisionDataset):
         #        yield k, v
         cur_iter = 0
         while 1:
+            sys.stderr.write('Iter[%d][%s]\n' % (cur_iter, value))
             if max_iters is not None and cur_iter >= max_iters:
                 sys.stderr.write('Breaking [%d][%s]\n' % (cur_iter, value))
                 break
