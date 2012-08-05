@@ -2,6 +2,7 @@
 import hadoopy
 import vision_data
 import os
+import sys
 
 
 class Mapper(object):
@@ -10,6 +11,7 @@ class Mapper(object):
         self.max_iters = os.environ.get('MAX_ITERS')
 
     def map(self, num_kvs, query):
+        sys.stderr.write('Flickr Query[%s]\n')
         for num, kv in enumerate(self.flickr.image_class_meta_url(query, max_iters=self.max_iters)):
             yield kv
             if num >= num_kvs:

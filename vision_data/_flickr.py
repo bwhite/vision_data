@@ -36,7 +36,7 @@ class Flickr(vision_data.VisionDataset):
         self.api_key = api_key
         self.api_secret = api_secret
         self.earliest = 1167631200
-        self.date_radius = 1296000  # seconds_in_month/2
+        self.date_radius = 15552000  # 6 months
         self.per_page = 500
         self.has_geo = 'HAS_GEO' in os.environ
         self.sleep_penalty_max = 30
@@ -96,6 +96,7 @@ class Flickr(vision_data.VisionDataset):
         cur_iter = 0
         while 1:
             if max_iters is not None and cur_iter >= max_iters:
+                sys.stderr.write('Breaking [%d][%s]\n' % (cur_iter, value))
                 break
             cur_iter += 1
             cur_time_center = random.randint(self.min_rnd_date, self.max_rnd_date)
