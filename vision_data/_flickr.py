@@ -68,7 +68,7 @@ class Flickr(vision_data.VisionDataset):
                 xml.etree.ElementTree.ParseError,
                 urllib2.URLError,
                 urllib2.HTTPError), e:
-            print('Except[%s]' % str(e))
+            sys.stderr.write('Except[%s]\n' % str(e))
             time.sleep(self.sleep_penalty)
             self.sleep_penalty = min(self.sleep_penalty_max, self.sleep_penalty * 2)
 
@@ -89,12 +89,12 @@ class Flickr(vision_data.VisionDataset):
         Returns:
             Data is in the form of (image_url, metadata)
         """
-        for page in range(1, self.num_pages):
-            for k, v in self._get_data(self._query(value, page=page)):
-                yield k, v
+        #for page in range(1, self.num_pages):
+        #    for k, v in self._get_data(self._query(value, page=page)):
+        #        yield k, v
         cur_iter = 0
         while 1:
-            if max_iters is not None and cur_iter > max_iters:
+            if max_iters is not None and cur_iter >= max_iters:
                 break
             cur_iter += 1
             cur_time_center = random.randint(self.min_rnd_date, self.max_rnd_date)
