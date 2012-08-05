@@ -2,6 +2,7 @@
 import urllib2
 import socket
 import hadoopy
+import os
 
 
 def download_file(url):
@@ -17,15 +18,24 @@ def download_file(url):
     return data
 
 
-def mapper(key, value):
-    url = key
-    try:
-        data = download_file(url)
-    except Exception:
-        hadoopy.counter('FILE_DOWNLOADER', 'Exception')
-    else:
-        yield url, (data, value)
+class Mapper(object):
+
+    def __init__(self):
+        self.output_type = os.environ.get('OUTPUT_TYPE', 'image')
+
+    def map(self, url, value):
+        try:
+            data = download_file(url)
+        except Exception:
+            hadoopy.counter('FILE_DOWNLOADER', 'Exception')
+        else:
+            if self.output_type == 'meta':
+                yield url, (data, value)
+            elif self.output_type == 'image':
+                yield url, data
+            else:
+                raise ValueError('OutputType[%s]' % self.output_type)
 
 
 if __name__ == "__main__":
-    hadoopy.run(mapper)
+    hadoopy.run(Mapper)
