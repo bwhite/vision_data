@@ -80,7 +80,7 @@ class Flickr(vision_data.VisionDataset):
                 except KeyError:
                     return
 
-    def image_class_meta_url(self, value):
+    def image_class_meta_url(self, value, max_iters=None):
         """
         Args:
             tags:
@@ -91,7 +91,11 @@ class Flickr(vision_data.VisionDataset):
         for page in range(1, self.num_pages):
             for k, v in self._get_data(self._query(value, page=page)):
                 yield k, v
+        cur_iter = 0
         while 1:
+            if max_iters is not None and cur_iter > max_iters:
+                break
+            cur_iter += 1
             cur_time_center = random.randint(self.min_rnd_date, self.max_rnd_date)
             min_date = cur_time_center - self.date_radius
             max_date = cur_time_center + self.date_radius

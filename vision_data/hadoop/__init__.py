@@ -11,7 +11,7 @@ def _chunks(l, n):
         yield l[i:i+n]
 
 
-def flickr_images(tags, images_per_tag, hdfs_output, num_files=20, api_key=None, api_secret=None, remove_output=False):
+def flickr_images(tags, images_per_tag, hdfs_output, num_files=20, max_iters=4, api_key=None, api_secret=None, remove_output=False):
     tags = list(tags)
     if api_key is None or api_secret is None:
         api_key = os.environ['FLICKR_API_KEY']
@@ -23,5 +23,6 @@ def flickr_images(tags, images_per_tag, hdfs_output, num_files=20, api_key=None,
     for chunk_num, chunk_tags in enumerate(_chunks(tags, tags_per_chunk)):
         hadoopy.writetb(hdfs_output + '/tags/%d' % chunk_num, [(images_per_tag, tag) for tag in chunk_tags])
     hadoopy.launch_frozen(hdfs_output + '/tags', hdfs_output + '/metadata', _lf('flickr_bulk.py'), cmdenvs={'FLICKR_API_KEY': api_key,
-                                                                                                            'FLICKR_API_SECRET': api_secret}, num_reducers=num_files)
+                                                                                                            'FLICKR_API_SECRET': api_secret, 'MAX_ITERS': str(max_iters)},
+                          num_reducers=num_files)
     hadoopy.launch_frozen(hdfs_output + '/metadata', hdfs_output + '/image_metadata', _lf('file_downloader.py'))
