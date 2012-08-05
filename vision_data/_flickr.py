@@ -27,7 +27,7 @@ class Flickr(vision_data.VisionDataset):
     """
     """
 
-    def __init__(self):
+    def __init__(self, max_iters=10, max_pages=1):
         super(Flickr, self).__init__(name='flickr',
                                      homepage='http://www.flickr.com',
                                      bibtexs=None,
@@ -46,7 +46,8 @@ class Flickr(vision_data.VisionDataset):
         self.flickr = flickrapi.FlickrAPI(self.api_key)
         self.min_rnd_date = self.earliest + self.date_radius
         self.max_rnd_date = int(time.time()) - self.date_radius
-        self.num_pages = 1
+        self.max_pages = max_pages
+        self.max_iters = max_iters
 
     def _query(self, value, dates=None, page=None):
         try:
@@ -82,7 +83,7 @@ class Flickr(vision_data.VisionDataset):
                 except KeyError:
                     return
 
-    def image_class_meta_url(self, value, max_iters=1):
+    def image_class_meta_url(self, value):
         """
         Args:
             tags:
@@ -90,15 +91,14 @@ class Flickr(vision_data.VisionDataset):
         Returns:
             Data is in the form of (image_url, metadata)
         """
-        #for page in range(1, self.num_pages):
-        #    for k, v in self._get_data(self._query(value, page=page)):
-        #        yield k, v
+        for page in range(1, self.max_pages):
+            for k, v in self._get_data(self._query(value, page=page)):
+                yield k, v
         cur_iter = 0
         while 1:
-            sys.stderr.write('Iter[%d][%s]\n' % (cur_iter, value))
-            if cur_iter >= max_iters:
-                sys.stderr.write('Breaking [%d][%s]\n' % (cur_iter, value))
+            if cur_iter >= self.max_iters:
                 break
+            sys.stderr.write('Iter[%d][%s]\n' % (cur_iter, value))
             cur_iter += 1
             cur_time_center = random.randint(self.min_rnd_date, self.max_rnd_date)
             min_date = cur_time_center - self.date_radius
