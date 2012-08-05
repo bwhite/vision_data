@@ -8,6 +8,7 @@ import flickrapi
 import vision_data
 import os
 import xml.etree.ElementTree
+import sys
 
 api_key = ''  # NOTE(brandyn): Include your flickr api key and secret here
 api_secret = ''
