@@ -82,7 +82,7 @@ class Flickr(vision_data.VisionDataset):
                 except KeyError:
                     return
 
-    def image_class_meta_url(self, value, max_iters=None):
+    def image_class_meta_url(self, value, max_iters=1):
         """
         Args:
             tags:
@@ -96,7 +96,7 @@ class Flickr(vision_data.VisionDataset):
         cur_iter = 0
         while 1:
             sys.stderr.write('Iter[%d][%s]\n' % (cur_iter, value))
-            if max_iters is not None and cur_iter >= max_iters:
+            if cur_iter >= max_iters:
                 sys.stderr.write('Breaking [%d][%s]\n' % (cur_iter, value))
                 break
             cur_iter += 1
