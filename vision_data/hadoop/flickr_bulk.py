@@ -19,4 +19,4 @@ def reducer(key, values):
 
 
 if __name__ == "__main__":
-    hadoopy.run(Mapper, reducer)
+    hadoopy.run(Mapper, reducer, jobconfs=['mapred.task.timeout=6000000'])
