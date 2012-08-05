@@ -11,7 +11,7 @@ def _chunks(l, n):
         yield l[i:i+n]
 
 
-def flickr_images(tags, images_per_tag, hdfs_output, num_files=20, max_iters=4, api_key=None, api_secret=None, remove_output=False):
+def flickr_images(tags, images_per_tag, hdfs_output, num_files=20, max_iters=1, api_key=None, api_secret=None, remove_output=False):
     tags = list(tags)
     if api_key is None or api_secret is None:
         api_key = os.environ['FLICKR_API_KEY']
