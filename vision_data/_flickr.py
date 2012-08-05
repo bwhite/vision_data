@@ -38,8 +38,9 @@ class Flickr(vision_data.VisionDataset):
         self.date_radius = 1296000  # seconds_in_month/2
         self.per_page = 500
         self.has_geo = 'HAS_GEO' in os.environ
-        self.sleep_penalty = 15
-        self.sleep_penalty_orig = 15
+        self.sleep_penalty_max = 30
+        self.sleep_penalty = 5
+        self.sleep_penalty_orig = 5
         self.extras = 'description,license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_sq,url_t,url_s,url_m,url_o'
         self.flickr = flickrapi.FlickrAPI(self.api_key)
         self.min_rnd_date = self.earliest + self.date_radius
@@ -69,7 +70,7 @@ class Flickr(vision_data.VisionDataset):
                 urllib2.HTTPError), e:
             print('Except[%s]' % str(e))
             time.sleep(self.sleep_penalty)
-            self.sleep_penalty *= 2
+            self.sleep_penalty = min(self.sleep_penalty_max, self.sleep_penalty * 2)
 
     def _get_data(self, res):
         if res:
