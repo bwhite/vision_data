@@ -8,7 +8,7 @@ import sys
 class Mapper(object):
     def __init__(self):
         self.flickr = vision_data.Flickr()
-        self.max_iters = os.environ.get('MAX_ITERS')
+        self.max_iters = int(os.environ.get('MAX_ITERS', 1))
 
     def map(self, num_kvs, query):
         sys.stderr.write('Flickr Query[%s]\n')
