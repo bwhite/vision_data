@@ -3,6 +3,7 @@ import os
 import cPickle as pickle
 import vision_data
 import Image
+import cv2
 
 
 class MSRC(vision_data.VisionDataset):
@@ -69,5 +70,5 @@ class MSRC(vision_data.VisionDataset):
             for fn in fp:
                 fn = fn.rstrip()[:-4]
                 gt = np.asarray(Image.open(self.dataset_path + 'MSRC_ObjCategImageDatabase_v2/GroundTruth/%s_GT.bmp' % fn)).copy()
-                image = Image.open(self.dataset_path + 'MSRC_ObjCategImageDatabase_v2/Images/%s.bmp' % fn)
+                image = cv2.imread(self.dataset_path + 'MSRC_ObjCategImageDatabase_v2/Images/%s.bmp' % fn)
                 yield self._gt_to_masks(gt), image
