@@ -19,7 +19,7 @@ class SUN397(vision_data.VisionDataset):
                                     homepage='http://groups.csail.mit.edu/vision/SUN/',
                                     bibtexs=None,
                  overview=None)
-        self.hierarchy = json.load(open(self.dataset_path + 'sun908_hierarchy.js'))
+        self.hierarchy = None
 
     def scene_rec_parse(self, split=('train', 1, 2)):
         """
@@ -32,6 +32,8 @@ class SUN397(vision_data.VisionDataset):
 
             Data is in the form of [image_path] = scene_name
         """
+        if self.hierarchy is None:
+            self.hierarchy = json.load(open(self.dataset_path + 'sun908_hierarchy.js'))
         split, partition, level = split
         assert 0 < partition <= 10
         assert 0 <= level <= 2
