@@ -1,7 +1,6 @@
 import hashlib
 import os
 import urllib
-import imfeat
 import logging
 import urllib
 import subprocess
@@ -101,6 +100,7 @@ class VisionDataset(object):
             for image_fn, objects in self.object_rec_parse_fn(*args, **kw):
                 yield cv2.imread(image_fn), objects
         except NotImplementedError:
+            import imfeat
             try:
                 for image_url, objects in self.object_rec_parse_url(*args, **kw):
                     try:
