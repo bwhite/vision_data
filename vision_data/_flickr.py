@@ -4,23 +4,10 @@ import random
 import xml.parsers.expat
 import urllib2
 import httplib
-import flickrapi
 import vision_data
 import os
 import xml.etree.ElementTree
 import sys
-
-api_key = ''  # NOTE(brandyn): Include your flickr api key and secret here
-api_secret = ''
-try:
-    from flickr_api_key import api_key, api_secret
-except ImportError:
-    api_key = os.environ.get('FLICKR_API_KEY')
-    api_secret = os.environ.get('FLICKR_API_SECRET')
-    if not api_key or not api_secret:
-        print('Missing flickr API key')
-        import sys
-        sys.exit(1)
 
 
 class Flickr(vision_data.VisionDataset):
@@ -33,6 +20,18 @@ class Flickr(vision_data.VisionDataset):
                                      bibtexs=None,
                                      overview=None,
                                      no_root=True)
+        import flickrapi
+        api_key = ''  # NOTE(brandyn): Include your flickr api key and secret here
+        api_secret = ''
+        try:
+            from flickr_api_key import api_key, api_secret
+        except ImportError:
+            api_key = os.environ.get('FLICKR_API_KEY')
+            api_secret = os.environ.get('FLICKR_API_SECRET')
+            if not api_key or not api_secret:
+                print('Missing flickr API key')
+                import sys
+                sys.exit(1)
         self.api_key = api_key
         self.api_secret = api_secret
         self.earliest = 1167631200
@@ -50,6 +49,7 @@ class Flickr(vision_data.VisionDataset):
         self.max_iters = max_iters
 
     def _query(self, value, dates=None, page=None):
+        import flickrapi
         try:
             kw = {}
             if dates:
