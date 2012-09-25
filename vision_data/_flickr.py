@@ -41,7 +41,7 @@ class Flickr(vision_data.VisionDataset):
         self.sleep_penalty_max = 30
         self.sleep_penalty = 5
         self.sleep_penalty_orig = 5
-        self.extras = 'description,license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_sq,url_t,url_s,url_m,url_o'
+        self.extras = 'description,license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media,path_alias,url_sq,url_t,url_s,url_q,url_m,url_n,url_z,url_c,url_l,url_o'
         self.flickr = flickrapi.FlickrAPI(self.api_key)
         self.min_rnd_date = self.earliest + self.date_radius
         self.max_rnd_date = int(time.time()) - self.date_radius
