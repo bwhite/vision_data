@@ -56,7 +56,7 @@ class VisionDataset(object):
             cmd = 'tar -xjf %s -C %s' % (file_name, dir_name)
         elif ext == 'zip':
             cmd = 'unzip %s -d %s' % (file_name, dir_name)
-        elif ext == 'txt':  # Don't do anything
+        elif ext in ['txt', 'js']:  # Don't do anything
             raise DontRemoveException
         else:
             raise ValueError('Extension [%s] not supported' % ext)
