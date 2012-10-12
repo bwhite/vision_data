@@ -1,5 +1,6 @@
 import hadoopy
 import os
+import vision_data
 
 def _lf(fn):
     from . import __path__
