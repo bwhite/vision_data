@@ -32,3 +32,6 @@ def flickr_images(tags, images_per_tag, hdfs_output, num_files=20, max_iters=1,
     output_type = 'meta' if output_meta else 'image'
     hadoopy.launch_frozen(hdfs_output + '/metadata', hdfs_output + '/image_metadata', _lf('file_downloader.py'),
                           cmdenvs={'OUTPUT_TYPE': output_type})
+
+def sun397_to_hdfs(hdfs_path, **kw):
+    hadoopy.writetb_parts(hdfs_path, vision_data.SUN397().scene_rec_boxes(**kw), 50)
