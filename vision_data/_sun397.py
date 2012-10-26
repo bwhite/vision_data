@@ -36,7 +36,7 @@ class SUN397(vision_data.VisionDataset):
             self.hierarchy = json.load(open(self.dataset_path + 'sun908_hierarchy.js'))
         split, partition, level = split
         assert 0 < partition <= 10
-        assert 0 <= level <= 2
+        assert -1 <= level <= 2
         partition = '%.2d' % partition
         if split == 'train':
             g = 'Training_%s.txt' % partition
@@ -52,7 +52,7 @@ class SUN397(vision_data.VisionDataset):
                 for image_name in fp:
                     image_name = image_name.strip()
                     class_name = image_name.split('/', 2)[-1].rsplit('/', 1)[0]
-                    if level < 2:
+                    if 0 <= level < 2:
                         class_name = self.hierarchy[class_name][level]
                     elif level == -1:  # Report all as a list
                         class_name = self.hierarchy[class_name] + [class_name]
