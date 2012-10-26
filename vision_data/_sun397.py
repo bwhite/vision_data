@@ -54,5 +54,7 @@ class SUN397(vision_data.VisionDataset):
                     class_name = image_name.split('/', 2)[-1].rsplit('/', 1)[0]
                     if level < 2:
                         class_name = self.hierarchy[class_name][level]
+                    elif level == -1:  # Report all as a list
+                        class_name = self.hierarchy[class_name] + [class_name]
                     out['%sSUN397%s' % (self.dataset_path, image_name)] = class_name
         return out

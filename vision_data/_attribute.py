@@ -3,7 +3,7 @@ import os
 import glob
 import cPickle as pickle
 import vision_data
-import Image
+from PIL import Image
 import re
 
 

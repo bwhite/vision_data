@@ -2,7 +2,7 @@ import numpy as np
 import os
 import cPickle as pickle
 import vision_data
-import Image
+from PIL import Image
 import cv2
 
 
