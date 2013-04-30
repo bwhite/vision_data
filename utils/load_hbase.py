@@ -3,7 +3,7 @@ import hadoopy_hbase
 import argparse
 
 
-DATASETS = {'CIFAR10': vision_data.CIFAR10}
+DATASETS = {'CIFAR10': vision_data.CIFAR10, 'LFWFunneling': vision_data.LFWFunneling}
 TABLE = 'images'
 
 
@@ -17,10 +17,10 @@ def main(prefix, dataset, thrift_server, thrift_port):
         client.mutateRow(TABLE, row, mutations)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Picarus user operations')
+    parser = argparse.ArgumentParser(description='Vision data loader')
     parser.add_argument('prefix')
     parser.add_argument('dataset', choices=list(DATASETS))
     parser.add_argument('--thrift_server', default='localhost')
     parser.add_argument('--thrift_port', default='9090')
     ARGS = parser.parse_args()
-    main('cifar10:', 'CIFAR10', ARGS.thrift_server, ARGS.thrift_port)
+    main(ARGS.prefix, ARGS.dataset, ARGS.thrift_server, ARGS.thrift_port)
