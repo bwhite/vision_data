@@ -16,4 +16,4 @@ class LFWFunneling(vision_data.VisionDataset):
     def images(self):
         for p in glob.glob(self.dataset_path + '/lfw_funneled/*'):
             for y in glob.glob(p + '/*'):
-                yield '', os.path.basename(p), {'meta:class': os.path.basename(y), 'data:image': open(y).read()}
+                yield '', os.path.basename(p), {'meta:file': os.path.basename(y), 'meta:class': os.path.basename(p), 'data:image': open(y).read()}
