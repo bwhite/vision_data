@@ -3,7 +3,7 @@ import hadoopy_hbase
 import argparse
 
 
-DATASETS = {'CIFAR10': vision_data.CIFAR10, 'SUN397': vision_data.SUN397, 'LFWFunneling': vision_data.LFWFunneling}
+DATASETS = {'CIFAR10': vision_data.CIFAR10, 'SUN397': vision_data.SUN397, 'LFWFunneling': vision_data.LFWFunneling, 'Caltech256': vision_data.Caltech256}
 TABLE = 'images'
 
 
