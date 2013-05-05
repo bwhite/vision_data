@@ -18,14 +18,7 @@ class Caltech256(vision_data.VisionDataset):
                                          overview=None)
 
     def images(self):
-        """
-        Returns:
-            Data is in the form of [image_path] = image_classes
-        """
-        out = {}
         for class_name_enc in glob.glob(self.dataset_path + '/256_ObjectCategories/*.jpg'):
             class_name = re.search(r'.+256_ObjectCategories/[0-9]+\.([a-z\-]+[a-z])(\-101)?', class_name_enc).group(1)
             for fn in glob.glob(class_name_enc + '/*'):
                 yield '', os.path.basename(fn), {'meta:class': class_name, 'data:image': open(fn).read()}
-                out[fn] = set([class_name])
-        return out
