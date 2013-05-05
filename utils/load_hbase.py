@@ -20,6 +20,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Vision data loader')
     parser.add_argument('prefix')
     parser.add_argument('dataset', choices=list(DATASETS))
+    parser.add_argument('--download', action='store_true')
     parser.add_argument('--thrift_server', default='localhost')
     parser.add_argument('--thrift_port', default='9090')
     ARGS = parser.parse_args()
