@@ -3,7 +3,6 @@ import os
 import cPickle as pickle
 import vision_data
 from PIL import Image
-import cv2
 
 
 class MSRC(vision_data.VisionDataset):
@@ -65,6 +64,7 @@ class MSRC(vision_data.VisionDataset):
             Data is in the form of (masks, PIL Image), where
             masks is a dict of boolean masks with keys as class names
         """
+        import cv2
         data_fn = {'train': 'Train.txt', 'test': 'Test.txt', 'validation': 'Validation.txt'}[split]
         with open(self.dataset_path + data_fn) as fp:
             for fn in fp:

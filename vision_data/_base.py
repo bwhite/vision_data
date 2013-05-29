@@ -6,7 +6,6 @@ import urllib
 import subprocess
 import shutil
 import numpy as np
-import cv2
 import xml.etree.cElementTree as ElementTree
 
 
@@ -96,6 +95,7 @@ class VisionDataset(object):
             os.remove(self.dataset_path + file_name)
     
     def object_rec_parse(self, *args, **kw):
+        import cv2
         try:
             for image_fn, objects in self.object_rec_parse_fn(*args, **kw):
                 yield cv2.imread(image_fn), objects
@@ -177,6 +177,7 @@ class VisionDataset(object):
         Yields:
             (scene_name, numpy array)
         """
+        import cv2
         for image_path, scene_name in self.scene_rec_parse(*args, **kw).items():
             yield scene_name, cv2.imread(image_path)
 
@@ -185,6 +186,7 @@ class VisionDataset(object):
         Yields:
             (IsSame, (face0, face1)) where face0/1 are numpy arrays
         """
+        import cv2
         for is_same, (face0_fn, face1_fn) in self.face_verification_parse(*args, **kw).items():
             yield is_same, (cv2.imread(face0_fn), cv2.imread(face1_fn))
 
@@ -196,6 +198,7 @@ class VisionDataset(object):
         Yields:
             (tags, numpy array)
         """
+        import cv2
         try:
             for image_class, image in self.single_image_class_boxes(*args, **kw):
                 yield [image_class], image
@@ -236,6 +239,7 @@ class VisionDataset(object):
         Yields:
             (tags, numpy array)
         """
+        import cv2
         image_class_data = self.image_class_negpos_parse(*args, **kw)
         for image_path, (neg_tags, pos_tags) in image_class_data.items():
             yield (set(neg_tags), set(pos_tags)), cv2.imread(image_path)

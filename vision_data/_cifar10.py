@@ -1,7 +1,6 @@
 import vision_data
 import os
 import cPickle as pickle
-import cv2
 import numpy as np
 
 
@@ -16,6 +15,7 @@ class CIFAR10(vision_data.VisionDataset):
                                       overview=None)
 
     def images(self):
+        import cv2
         prefix_paths = [('train', self.dataset_path + '/cifar-10-batches-py/data_batch_%d' % x)
                         for x in range(1, 6)]
         prefix_paths += [('test', self.dataset_path + '/cifar-10-batches-py/test_batch')]
